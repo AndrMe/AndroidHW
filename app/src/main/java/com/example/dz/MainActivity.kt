@@ -8,12 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -49,6 +49,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 
 
+
 class MainActivity: ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,16 +75,34 @@ class MainActivity: ComponentActivity(){
 @Composable
 fun AppScreen()
 {
-
     val list = rememberSaveable { mutableStateListOf<Int>() }
     val cellCount: Int = getCellCount()
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {FloatingActionButton(
+    ){ padding ->
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            verticalArrangement = Arrangement.Bottom
+        ){
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(cellCount),
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                items(list, key = {it}) { it ->
+                    MyCell(it.toString(), colorResource(if (it % 2 ==0) R.color.redSquare else R.color.blueSquare) )
+                }
+            }
+            FloatingActionButton(
                 onClick = {
                     list.add(element = list.size)
                 },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(bottom = 32.dp, end = 32.dp, top = 8.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_add_24),
@@ -91,20 +110,9 @@ fun AppScreen()
                 )
             }
         }
-    ){ padding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(cellCount),
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding() // Not to overlap with the top
-                .padding(PaddingValues(bottom = 100.dp, )), // Not to overlap with the ActionButton
-        ) {
-            items(list, key = {it -> it}) { index ->
-                MyCell(list[index].toString(), colorResource(if (index % 2 ==0) R.color.redSquare else R.color.blueSquare) )
-            }
-        }
     }
 }
+
 
 @Composable
 fun getCellCount():Int
