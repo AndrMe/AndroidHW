@@ -4,11 +4,11 @@ package com.example.dz
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -49,26 +49,31 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 
 
-
 class MainActivity: ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(
+                scrim = getColor(R.color.purple_700),
+            )
+        )
         setContent {
-            MaterialTheme(
-                colorScheme = if (isSystemInDarkTheme()) {
-                    darkColorScheme()
-                } else {
-                    lightColorScheme(
-                        background = colorResource( R.color.backGround),
-                        )
-                }
-            ) {
+            MyTheme{
                 AppScreen()
             }
-
         }
     }
+}
+
+@Composable
+fun MyTheme(content: @Composable () -> Unit) {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme(
+        background = colorResource(R.color.backGround)
+    )
+    MaterialTheme(
+        colorScheme = colorScheme,
+        content = content
+    )
 }
 
 @Preview(showBackground = true)
@@ -85,15 +90,15 @@ fun AppScreen()
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            verticalArrangement = Arrangement.Bottom
         ){
             LazyVerticalGrid(
                 columns = GridCells.Fixed(cellCount),
                 modifier = Modifier
                     .weight(1f)
             ) {
-                items(list, key = {it}) { it ->
-                    MyCell(it.toString(), colorResource(if (it % 2 ==0) R.color.redSquare else R.color.blueSquare) )
+                items(list, key = {it})
+                { it ->
+                    MyCell(it.toString(), getColor(it)  )
                 }
             }
             FloatingActionButton(
@@ -113,18 +118,25 @@ fun AppScreen()
     }
 }
 
+@Composable
+fun getColor(it: Int): Color
+{
+    val evenColor = colorResource(R.color.redSquare)
+    val oddColor = colorResource(R.color.blueSquare)
+    return if (it % 2 ==0) evenColor else oddColor
+}
 
 @Composable
 fun getCellCount():Int
 {
-    val portraitC = integerResource(R.integer.portrait_columns)
+    val portraitC =  integerResource(R.integer.portrait_columns)
     val landscapeC = integerResource(R.integer.landscape_columns)
     val configuration = LocalConfiguration.current
     return if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) portraitC else landscapeC
 }
 
 @Composable
-fun MyCell(it: String,color: Color)
+fun MyCell(it: String, color: Color)
 {
     Box(
         modifier = Modifier
