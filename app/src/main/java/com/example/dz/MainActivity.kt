@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.ReadOnlyComposable
 
 
 class MainActivity: ComponentActivity(){
@@ -107,7 +108,7 @@ fun AppScreen()
                 },
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(bottom = 32.dp, end = 32.dp, top = 8.dp)
+                    .padding(bottom = 8.dp, end = 32.dp, top = 8.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_add_24),
@@ -118,6 +119,7 @@ fun AppScreen()
     }
 }
 
+@ReadOnlyComposable
 @Composable
 fun getColor(it: Int): Color
 {
@@ -126,6 +128,7 @@ fun getColor(it: Int): Color
     return if (it % 2 ==0) evenColor else oddColor
 }
 
+@ReadOnlyComposable
 @Composable
 fun getCellCount():Int
 {
@@ -150,5 +153,4 @@ fun MyCell(it: String, color: Color)
             textAlign = TextAlign.Center,
         )
     }
-
 }
