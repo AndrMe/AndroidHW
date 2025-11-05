@@ -1,6 +1,5 @@
 package com.example.dz
 
-
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -48,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.ReadOnlyComposable
+
 
 
 class MainActivity: ComponentActivity(){
@@ -139,10 +139,10 @@ fun getCellCount():Int
 }
 
 @Composable
-fun MyCell(it: String, color: Color)
+fun MyCell(it: String, color: Color, modifier: Modifier = Modifier)
 {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(1f)
             .padding(8.dp)
             .background(color),
